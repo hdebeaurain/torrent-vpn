@@ -1,0 +1,40 @@
+version: '3.3'
+services:
+    transmission-openvpn:
+        cap_add:
+            - NET_ADMIN
+        volumes:
+            - './transmission/data:/data'
+            - './transmission/config:/config'
+        environment:
+            - OPENVPN_PROVIDER=NORDVPN
+            - OPENVPN_USERNAME=robinplanterose@hotmail.fr
+            - OPENVPN_PASSWORD=Groscacahuge7608.
+            - LOCAL_NETWORK=192.168.1.0/24
+            - NORDVPN_PROTOCOL=TCP
+            - NORDVPN_CATEGORY=P2P
+            - NORDVPN_COUNTRY=Bulgaria
+        logging:
+            driver: json-file
+            options:
+                max-size: 10m
+        ports:
+            - '9091:9091'
+        image: haugene/transmission-openvpn
+
+
+    torrent:
+      image: crazymax/rtorrent-rutorrent
+      volumes:
+        - './transmission/transmission-data:/data'
+      ports:
+        - "80:80"
+        - "49184:49184"
+        - "49184:49184/udp"
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - UMASK_SET=022
+      restart: unless-stopped
+      depends_on:
+        - transmission-openvpn
