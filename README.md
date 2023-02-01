@@ -3,7 +3,7 @@
 mkdir -p transmission/data && mkdir -p transmission/config && mkdir -p transmission/transmission-data
 ```
 
-Il est possible de changer le pays avec lequel etablir la connexion NordVPN: 
+Il est possible de changer le pays avec lequel etablir la connexion NordVPN, le nom du pays est a specifier dans le fichier *docker-compose.yml* : 
 
 
 Country | Code | ID
