@@ -1,7 +1,11 @@
 # torrent-vpn
-mkdir -p transmission/data
-mkdir -p transmission/config
-mkdir -p transmission/transmission-data
+```
+mkdir -p transmission/data && mkdir -p transmission/config && mkdir -p transmission/transmission-data
+```
+
+```
+docker-compose up -d
+```
 
 ```
 
