@@ -1,40 +1,53 @@
 version: '3.3'
+
 services:
-    transmission-openvpn:
-        cap_add:
-            - NET_ADMIN
-        volumes:
-            - './transmission/data:/data'
-            - './transmission/config:/config'
-        environment:
-            - OPENVPN_PROVIDER=NORDVPN
-            - OPENVPN_USERNAME=robinplanterose@hotmail.fr
-            - OPENVPN_PASSWORD=Groscacahuge7608.
-            - LOCAL_NETWORK=192.168.1.0/24
-            - NORDVPN_PROTOCOL=TCP
-            - NORDVPN_CATEGORY=P2P
-            - NORDVPN_COUNTRY=Bulgaria
-        logging:
-            driver: json-file
-            options:
-                max-size: 10m
-        ports:
-            - '9091:9091'
-        image: haugene/transmission-openvpn
+  client-torrent:
+    container_name: client-torrent
+    hostname: client-torrent
+    image: haugene/transmission-openvpn
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - './transmission/data:/data'
+      - './transmission/config:/config'
+    environment:
+      - OPENVPN_PROVIDER=$OPENVPN_PROVIDER
+      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
+      - OPENVPN_USERNAME=$OPENVPN_USERNAME
+      - OPENVPN_PASSWORD=$OPENVPN_PASSWORD
+      - LOCAL_NETWORK=$LOCAL_NETWORK
+      - NORDVPN_PROTOCOL=TCP
+      - NORDVPN_CATEGORY=$NORDVPN_CATEGORY
+      - NORDVPN_COUNTRY=$NORDVPN_COUNTRY
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    ports:
+      - 9091:9091
+    restart: unless-stopped
+    network_mode: bridge
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
 
-
-    torrent:
-      image: crazymax/rtorrent-rutorrent
-      volumes:
-        - './transmission/transmission-data:/data'
-      ports:
-        - "80:80"
-        - "49184:49184"
-        - "49184:49184/udp"
-      environment:
-        - PUID=1000
-        - PGID=1000
-        - UMASK_SET=022
-      restart: unless-stopped
-      depends_on:
-        - transmission-openvpn
+  torrent:
+    container_name: link-torrent
+    hostname: link-torrent
+    image: crazymax/rtorrent-rutorrent
+    volumes:
+      - './transmission/transmission-data:/data'
+    ports:
+      - 80:80
+      - 49184:49184
+      - 49184:49184/udp
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK_SET=022
+    restart: unless-stopped
+    depends_on:
+      - client-torrent
+    network_mode: bridge
