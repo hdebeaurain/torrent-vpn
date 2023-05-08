@@ -18,7 +18,25 @@ NORDVPN_COUNTRY=Bulgaria
 
 # Torrent client
 ```
-Il est possible de changer le pays avec lequel etablir la connexion NordVPN, le nom du pays est a specifier dans le fichier *docker-compose.yml*. Le tableau se trouve en bas du README. 
+Le fichier ".env" est a creer a la racine du repo. 
+```
+
+├── docker-compose.yml
+├── README.md
+├── **.env**          <<<<<<<<<<<<<<<<
+└── **transmission**
+    ├── config
+    │   ├── openvpn-credentials.txt
+    │   └── transmission-home
+    │       └── transmission.log
+    └── **data**
+        ├── incomplete
+        └── **completed**
+
+```
+Les torrents telecharges sont a recuperer dans transmission/data/completed. 
+
+Il est possible de changer le pays avec lequel etablir la connexion NordVPN, le nom du pays est a specifier dans le fichier *.env*. Le tableau enumerant la liste des codes des pays se trouve en bas du README. 
 
 
 Pour verifier si le conteneur se connecte bien au VPN :
@@ -30,22 +48,6 @@ Cela nous donne notre adresse IP publique
 docker exec client-torrent curl --silent "http://ipinfo.io/ip"
 ```
 Si cette IP est differente, le conteneur est bien connecte au VPN.
-
-```
-
-├── docker-compose.yml
-├── README.md
-├── **.env**
-└── **transmission**
-    ├── config
-    │   ├── openvpn-credentials.txt
-    │   └── transmission-home
-    │       └── transmission.log
-    └── **data**
-        ├── incomplete
-        └── **completed**
-
-```
 
 
 Country | Code | ID
