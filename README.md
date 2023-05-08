@@ -1,9 +1,51 @@
+Ce docker-compose permet de monter un tunnel VPN avec les providers disponibles [ici](https://haugene.github.io/docker-transmission-openvpn/supported-providers/) et d'y attacher un client web pour telecharger des torrents. Le connexion du conteneur du client provient du conteneur VPN. Si la connexion VPN se coupe, les deux images redemarreront et les telechargements de torrents reprendront une fois la connexion VPN retablie. 
+
 # torrent-vpn
-```
-mkdir -p transmission/data && mkdir -p transmission/config && mkdir -p transmission/transmission-data
+```bash
+mkdir -p transmission/data && mkdir -p transmission/config && mkdir -p transmission/transmission-data && chmod -R 777 transmission
 ```
 
-Il est possible de changer le pays avec lequel etablir la connexion NordVPN, le nom du pays est a specifier dans le fichier *docker-compose.yml* : 
+Il faut creer un fichier ".env" qui contiendra ces variables : 
+```bash
+# Transmission with OpenVPN
+OPENVPN_PROVIDER=NORDVPN
+OPENVPN_USERNAME=
+OPENVPN_PASSWORD=
+LOCAL_NETWORK=192.168.1.0/24
+NORDVPN_PROTOCOL=TCP
+NORDVPN_CATEGORY=P2P
+NORDVPN_COUNTRY=Bulgaria
+
+# Torrent client
+```
+Il est possible de changer le pays avec lequel etablir la connexion NordVPN, le nom du pays est a specifier dans le fichier *docker-compose.yml*. Le tableau se trouve en bas du README. 
+
+
+Pour verifier si le conteneur se connecte bien au VPN :
+```bash
+curl ifconfig.me
+```
+Cela nous donne notre adresse IP publique
+```bash
+docker exec client-torrent curl --silent "http://ipinfo.io/ip"
+```
+Si cette IP est differente, le conteneur est bien connecte au VPN.
+
+```
+
+├── docker-compose.yml
+├── README.md
+├── **.env**
+└── **transmission**
+    ├── config
+    │   ├── openvpn-credentials.txt
+    │   └── transmission-home
+    │       └── transmission.log
+    └── **data**
+        ├── incomplete
+        └── **completed**
+
+```
 
 
 Country | Code | ID
@@ -68,51 +110,3 @@ United Arab Emirates | AE | 226
 United Kingdom | GB | 227
 United States | US | 228
 Vietnam | VN | 234
-
-```
-docker-compose up -d
-```
-
-```
-
-├── docker-compose.yml
-├── README.md
-└── **transmission**
-    ├── **config**
-    │   ├── openvpn-credentials.txt
-    │   ├── transmission-credentials.txt
-    │   └── transmission-home
-    │       ├── blocklists
-    │       ├── dht.dat
-    │       ├── resume
-    │       │   └── xx.torrent.xx.resume
-    │       ├── settings.json
-    │       ├── stats.json
-    │       ├── torrents
-    │       │   └── torrenthash.torrent
-    │       └── transmission.log
-    ├── **data**
-    │   └── incomplete
-    │       └── proxmox-ve_7.3-1.iso.part
-    └── **transmission-data**
-        ├── geoip
-        │   ├── GeoLite2-City.mmdb
-        │   └── GeoLite2-Country.mmdb
-        ├── rtorrent
-        │   ├── log
-        │   │   └── rtorrent.log
-        │   └── watch
-        └── rutorrent
-            ├── conf
-            │   ├── access.ini
-            │   ├── plugins.ini
-            │   └── users
-            ├── plugins
-            ├── plugins-conf
-            ├── rutorrent.log
-            ├── share
-            │   ├── torrents
-            │   └── users
-            └── themes
-
-```
