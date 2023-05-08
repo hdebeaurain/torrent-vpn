@@ -5,7 +5,7 @@ Ce docker-compose permet de monter un tunnel VPN avec les providers disponibles 
 mkdir -p transmission/data && mkdir -p transmission/config && mkdir -p transmission/transmission-data && chmod -R 777 transmission
 ```
 
-Il faut creer un fichier ".env" qui contiendra ces variables : 
+Il faut creer un fichier ".env" qui contiendra ces variables. Cette liste est non-exhaustive et sera a adapter selon le provider VPN.  
 ```bash
 # Transmission with OpenVPN
 OPENVPN_PROVIDER=NORDVPN
