@@ -19,6 +19,9 @@ services:
       - NORDVPN_PROTOCOL=TCP
       - NORDVPN_CATEGORY=$NORDVPN_CATEGORY
       - NORDVPN_COUNTRY=$NORDVPN_COUNTRY
+#      - http_proxy=https://nginxproxy.debeaurain.fr
+#      - https_proxy=https://nginxproxy.debeaurain.fr
+#      - no_proxy=localhost,127.0.0.1
     logging:
       driver: json-file
       options:
@@ -47,6 +50,9 @@ services:
       - PUID=1000
       - PGID=1000
       - UMASK_SET=022
+      - http_proxy=https://nginxproxy.debeaurain.fr
+      - https_proxy=https://nginxproxy.debeaurain.fr
+      - no_proxy=localhost,127.0.0.1
     restart: unless-stopped
     depends_on:
       - client-torrent
